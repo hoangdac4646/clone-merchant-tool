@@ -7,6 +7,8 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
+import os
+
 from constant import ConstVariables
 from dev import DevVariables
 from prod import ProdVariables
@@ -53,7 +55,7 @@ def step_0():
 
 def step_1(params_list):
     # Init
-    delivery_fee_url: str = ENV_VAR.domain + CONST_VAR.merchant_urls[0].format(ENV_VAR.merchant_ids[0])
+    delivery_fee_url: str = ENV_VAR.domain + CONST_VAR.merchant_urls[0].format(BUSINESS_ID)
     elements = CONST_VAR.merchant_rule_order_element
     params = params_list
     WEBDRIVER.get(delivery_fee_url)
@@ -110,7 +112,7 @@ def step_1(params_list):
 
 
 def step_2(params_list):
-    payment_method_url: str = ENV_VAR.domain + CONST_VAR.merchant_urls[1].format(ENV_VAR.merchant_ids[0])
+    payment_method_url: str = ENV_VAR.domain + CONST_VAR.merchant_urls[1].format(BUSINESS_ID)
     elements = CONST_VAR.merchant_payment_element
     params = params_list
     WEBDRIVER.get(payment_method_url)
@@ -136,7 +138,7 @@ def step_2(params_list):
 
 
 def step_3(params_list):
-    shipping_carrier_url: str = ENV_VAR.domain + CONST_VAR.merchant_urls[2].format(ENV_VAR.merchant_ids[0])
+    shipping_carrier_url: str = ENV_VAR.domain + CONST_VAR.merchant_urls[2].format(BUSINESS_ID)
     elements = CONST_VAR.merchant_carrier_element
     params = params_list
     WEBDRIVER.get(shipping_carrier_url)
@@ -163,7 +165,7 @@ def step_3(params_list):
 
 
 def step_4(params_list):
-    commission_rule_url: str = ENV_VAR.domain + CONST_VAR.place_urls[0].format(ENV_VAR.place_ids[0])
+    commission_rule_url: str = ENV_VAR.domain + CONST_VAR.place_urls[0].format(PLACE_ID)
     elements = CONST_VAR.place_commission_rule_element
     params = params_list
     WEBDRIVER.get(commission_rule_url)
@@ -208,7 +210,7 @@ def step_4(params_list):
 
 
 def step_5(params_list):
-    zalo_contact_url: str = ENV_VAR.domain + CONST_VAR.place_urls[1].format(ENV_VAR.place_ids[0])
+    zalo_contact_url: str = ENV_VAR.domain + CONST_VAR.place_urls[1].format(PLACE_ID)
     elements = CONST_VAR.place_zalo_element
     params = params_list
     WEBDRIVER.get(zalo_contact_url)
@@ -230,7 +232,7 @@ def step_5(params_list):
 
 
 def step_6(params_list):
-    option_url: str = ENV_VAR.domain + CONST_VAR.place_urls[2].format(ENV_VAR.place_ids[0])
+    option_url: str = ENV_VAR.domain + CONST_VAR.place_urls[2].format(PLACE_ID)
     elements = CONST_VAR.place_option_element
 
     params_list.pop(0)
@@ -241,7 +243,6 @@ def step_6(params_list):
             EC.presence_of_element_located((By.XPATH, elements[0])))
 
         # Fill form
-
         try:
             WEBDRIVER.find_element_by_xpath("//a[text()='{}']".format(params[0])).click()
         except Exception as ex:
@@ -278,7 +279,7 @@ def step_6(params_list):
 
 
 def step_7(params_list):
-    option_group_url: str = ENV_VAR.domain + CONST_VAR.place_urls[3].format(ENV_VAR.place_ids[0])
+    option_group_url: str = ENV_VAR.domain + CONST_VAR.place_urls[3].format(PLACE_ID)
     elements = CONST_VAR.place_option_group_element
 
     params_list.pop(0)
@@ -330,7 +331,7 @@ def step_7(params_list):
 
 
 def step_8(params_list):
-    product_category_url: str = ENV_VAR.domain + CONST_VAR.place_urls[4].format(ENV_VAR.place_ids[0])
+    product_category_url: str = ENV_VAR.domain + CONST_VAR.place_urls[4].format(PLACE_ID)
     elements = CONST_VAR.place_product_category_element
 
     params_list.pop(0)
@@ -343,7 +344,8 @@ def step_8(params_list):
 
         # Fill form
         try:
-            WEBDRIVER.find_element_by_xpath("//p[text()='{}']/following::div[@class='icon-edit']".format(params[0])).click()
+            WEBDRIVER.find_element_by_xpath(
+                "//p[text()='{}']/following::div[@class='icon-edit']".format(params[0])).click()
         except:
             WEBDRIVER.find_element_by_xpath(elements[1]).click()
         finally:
@@ -368,7 +370,7 @@ def step_8(params_list):
 
 
 def step_9(params_list):
-    product_url: str = ENV_VAR.domain + CONST_VAR.place_urls[4].format(ENV_VAR.place_ids[0])
+    product_url: str = ENV_VAR.domain + CONST_VAR.place_urls[4].format(PLACE_ID)
     elements = CONST_VAR.place_product_element
 
     params_list.pop(0)
@@ -430,7 +432,7 @@ def step_9(params_list):
         #     EC.visibility_of_element_located((By.XPATH, elements[13])))
         try:
             input_image = WEBDRIVER.find_element_by_xpath(elements[13])
-            input_image.send_keys('/home/hoangdac/Pictures/1.png')
+            input_image.send_keys(os.path.dirname(os.path.abspath(__file__))+'/img/product/{}')
         except Exception as ex:
             print(ex)
 
@@ -456,7 +458,11 @@ def import_file():
             row = normalize(row)
 
             if len(row) > 0:
-                if "Thiết lập phí giao hàng" in row[0]:
+                if "Thiết lập ID" in row[0]:
+                    step = 0
+                elif "Thiết lập phí giao hàng" in row[0]:
+                    step_list.append(step_list_item)
+                    step_list_item = list()
                     step = 1
                 elif "Phương phức thanh toán" in row[0]:
                     step_list.append(step_list_item)
@@ -497,7 +503,7 @@ def import_file():
                         for r in range(0, len(row)):
                             option_list.append(row[r])
                         step_list_item.append(option_list)
-                    elif step > 0:
+                    elif step >= 0:
                         step_list_item.append(row[1] if len(row) > 1 else '')
 
                 line_count += 1
@@ -520,7 +526,7 @@ def normalize(data):
 
 
 def execute(environment: str = 'dev'):
-
+    global BUSINESS_ID, PLACE_ID
     ENV_VAR = DevVariables if environment == 'dev' else ProdVariables
 
     process_step: List[TestStep] = []
@@ -528,54 +534,70 @@ def execute(environment: str = 'dev'):
 
     data_list = import_file()
 
+    business_ids = data_list[0][0].split(",")
+    place_ids = data_list[0][1].split(",")
+    business_count = 0
+    place_count = 0
+
     try:
         # Step 0 (Login)
         step = 0
         step_0()
 
-        # Step 1 (Thiết lập phí giao hàng)
-        step = 1
-        step_1(data_list[0])
+        for business_id in business_ids:
+            BUSINESS_ID = business_id
+            business_count += 1
 
-        # Step 2 (Phương phức thanh toán)
-        step = 2
-        step_2(data_list[1])
+            # Step 1 (Thiết lập phí giao hàng)
+            step = 1
+            step_1(data_list[1])
 
-        # Step 3 (Đối tác vận chuyển)
-        step = 3
-        step_3(data_list[2])
+            # Step 2 (Phương phức thanh toán)
+            step = 2
+            step_2(data_list[2])
 
-        # # Step 4 (Commission Rule)
-        # step = 4
-        # step_4(step_list[3])
-        #
-        # # Step 5 (Zalo)
-        # step = 5
-        # step_5(WEBDRIVER, ENV_VAR, CONST_VAR)
+            # Step 3 (Đối tác vận chuyển)
+            step = 3
+            step_3(data_list[3])
 
-        # Step 6 (Tùy chọn)
-        step = 6
-        step_6(data_list[4])
+            # # Step 4 (Commission Rule)
+            # step = 4
+            # step_4(step_list[4])
+            #
 
-        # Step 7 (Tùy chọn nhóm)
-        step = 7
-        step_7(data_list[5])
+            # # Step 5 (Zalo)
+            # step = 5
+            # step_5(step_list[4])
 
-        # Step 8 (Tạo danh mục)
-        step = 8
-        step_8(data_list[6])
+        for place_id in place_ids:
+            PLACE_ID = place_id
+            place_count += 1
 
-        # Step 9 (Tạo mới sản phẩm)
-        step = 9
-        step_9(data_list[7])
+            # Step 6 (Tùy chọn)
+            step = 6
+            step_6(data_list[5])
+
+            # Step 7 (Tùy chọn nhóm)
+            step = 7
+            step_7(data_list[6])
+
+            # Step 8 (Tạo danh mục)
+            step = 8
+            step_8(data_list[7])
+
+            # Step 9 (Tạo mới sản phẩm)
+            step = 9
+            step_9(data_list[8])
+
+            print('Finish...\n')
 
     except Exception as ex:
         print(ex)
         print("Step {} Error\n"
-              "Merchant id: {}\n"
+              "Business id: {}\n"
               "Place id: {}\n"
-              "Merchant count: {}\n"
-              "Place count: {}\n".format(step, 0, 0, 0, 0))
+              "Business count: {}\n"
+              "Place count: {}\n".format(step, BUSINESS_ID, PLACE_ID, business_count, place_count))
         # "Place count: {}\n".format(step, business_id, place_id, business_count, place_count))
 
     finally:

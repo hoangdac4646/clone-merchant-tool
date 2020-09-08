@@ -9,6 +9,3 @@ class ProdVariables(Variables):
     #User
     username = "tu"
     password = "123456"
-
-    merchant_ids: List[int] = [222]
-    place_ids: List[int] = []
