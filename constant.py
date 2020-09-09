@@ -120,6 +120,8 @@ class ConstVariables:
         input_txt_element_template.format("Số lượng tối đa"),
         input_txt_element_template.format("Phần trăm giảm giá"),
         identify_element_template.format("Upload hình ảnh"),
+        "//div[text()='{}']".format("Tải lên"),
         "//input[@type='{}']".format("file"),
+        button_element_template.format("Thêm"),
         button_element_template.format('Xác nhận')
     ]

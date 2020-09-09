@@ -1,6 +1,8 @@
+import time
 from typing import List
 
 from selenium import webdriver
+from selenium.webdriver import ActionChains
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -240,11 +242,14 @@ def step_6(params_list):
         WEBDRIVER.get(option_url)
         # Identify page
         WebDriverWait(WEBDRIVER, 10).until(
-            EC.presence_of_element_located((By.XPATH, elements[0])))
+            EC.presence_of_all_elements_located((By.XPATH, elements[0])))
 
         # Fill form
         try:
-            WEBDRIVER.find_element_by_xpath("//a[text()='{}']".format(params[0])).click()
+            btn_edit = WebDriverWait(WEBDRIVER, 2).until(
+                EC.presence_of_element_located((By.XPATH, "//a[text()='{}']".format(params[0]))))
+
+            btn_edit.click()
         except Exception as ex:
             print(ex)
             WEBDRIVER.find_element_by_xpath(elements[1]).click()
@@ -288,7 +293,7 @@ def step_7(params_list):
 
         # Identify page
         WebDriverWait(WEBDRIVER, 10).until(
-            EC.presence_of_element_located((By.XPATH, elements[0])))
+            EC.presence_of_all_elements_located((By.XPATH, elements[0])))
 
         # Fill form
         try:
@@ -307,6 +312,7 @@ def step_7(params_list):
 
             input_option = WebDriverWait(WEBDRIVER, 10).until(
                 EC.visibility_of_element_located((By.XPATH, elements[3])))
+            clear_element(input_option)
             options = params[1].split(",")
             for option in options:
                 input_option.send_keys(option)
@@ -340,7 +346,7 @@ def step_8(params_list):
 
         # Identify page
         WebDriverWait(WEBDRIVER, 10).until(
-            EC.presence_of_element_located((By.XPATH, elements[0])))
+            EC.presence_of_all_elements_located((By.XPATH, elements[0])))
 
         # Fill form
         try:
@@ -379,7 +385,7 @@ def step_9(params_list):
 
         # Identify page
         WebDriverWait(WEBDRIVER, 10).until(
-            EC.presence_of_element_located((By.XPATH, elements[0].format(params[0]))))
+            EC.presence_of_all_elements_located((By.XPATH, elements[0].format(params[0]))))
 
         # Fill form
         WEBDRIVER.find_element_by_xpath(elements[1].format(params[0])).click()
@@ -397,6 +403,7 @@ def step_9(params_list):
 
         input_more_option = WebDriverWait(WEBDRIVER, 10).until(
             EC.visibility_of_element_located((By.XPATH, elements[5])))
+        clear_element(input_more_option)
         options = params[3].split(",")
         for option in options:
             input_more_option.send_keys(option)
@@ -428,19 +435,26 @@ def step_9(params_list):
 
         WEBDRIVER.find_element_by_xpath(elements[12]).click()
 
-        # input_image = WebDriverWait(WEBDRIVER, 10).until(
-        #     EC.visibility_of_element_located((By.XPATH, elements[13])))
+        WEBDRIVER.find_element_by_xpath(elements[13]).click()
         try:
-            input_image = WEBDRIVER.find_element_by_xpath(elements[13])
-            input_image.send_keys(os.path.dirname(os.path.abspath(__file__))+'/img/product/{}')
+            input_image = WebDriverWait(WEBDRIVER, 10).until(
+                EC.presence_of_element_located((By.XPATH, elements[14])))
+            input_image.send_keys(os.path.dirname(os.path.abspath(__file__)) + "/img/product/{}".format(params[10]))
+
+            WEBDRIVER.find_element_by_xpath(elements[15]).click()
+
         except Exception as ex:
             print(ex)
 
         # Submit
-        # WEBDRIVER.find_element_by_xpath(elements[3]).click()
+        time.sleep(2)
 
+        btn_submit = WEBDRIVER.find_element_by_xpath(elements[16])
+
+        ActionChains(WEBDRIVER).move_to_element(btn_submit).perform()
+
+        btn_submit.click()
         # @Todo: wait for submit
-        # WebDriverWait(WEBDRIVER, 10).until(EC.presence_of_element_located((By.XPATH, elements[0])))
 
 
 def import_file():
@@ -548,17 +562,17 @@ def execute(environment: str = 'dev'):
             BUSINESS_ID = business_id
             business_count += 1
 
-            # Step 1 (Thiết lập phí giao hàng)
-            step = 1
-            step_1(data_list[1])
-
-            # Step 2 (Phương phức thanh toán)
-            step = 2
-            step_2(data_list[2])
-
-            # Step 3 (Đối tác vận chuyển)
-            step = 3
-            step_3(data_list[3])
+            # # Step 1 (Thiết lập phí giao hàng)
+            # step = 1
+            # step_1(data_list[1])
+            #
+            # # Step 2 (Phương phức thanh toán)
+            # step = 2
+            # step_2(data_list[2])
+            #
+            # # Step 3 (Đối tác vận chuyển)
+            # step = 3
+            # step_3(data_list[3])
 
             # # Step 4 (Commission Rule)
             # step = 4
@@ -573,17 +587,17 @@ def execute(environment: str = 'dev'):
             PLACE_ID = place_id
             place_count += 1
 
-            # Step 6 (Tùy chọn)
-            step = 6
-            step_6(data_list[5])
-
-            # Step 7 (Tùy chọn nhóm)
-            step = 7
-            step_7(data_list[6])
-
-            # Step 8 (Tạo danh mục)
-            step = 8
-            step_8(data_list[7])
+            # # Step 6 (Tùy chọn)
+            # step = 6
+            # step_6(data_list[5])
+            #
+            # # Step 7 (Tùy chọn nhóm)
+            # step = 7
+            # step_7(data_list[6])
+            #
+            # # Step 8 (Tạo danh mục)
+            # step = 8
+            # step_8(data_list[7])
 
             # Step 9 (Tạo mới sản phẩm)
             step = 9
@@ -602,9 +616,6 @@ def execute(environment: str = 'dev'):
 
     finally:
         input("Press Enter to continue...")
-
-        WEBDRIVER.close()
-        WEBDRIVER.quit()
 
 
 if __name__ == "__main__":
