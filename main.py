@@ -562,17 +562,17 @@ def execute(environment: str = 'dev'):
             BUSINESS_ID = business_id
             business_count += 1
 
-            # # Step 1 (Thiết lập phí giao hàng)
-            # step = 1
-            # step_1(data_list[1])
-            #
-            # # Step 2 (Phương phức thanh toán)
-            # step = 2
-            # step_2(data_list[2])
-            #
-            # # Step 3 (Đối tác vận chuyển)
-            # step = 3
-            # step_3(data_list[3])
+            # Step 1 (Thiết lập phí giao hàng)
+            step = 1
+            step_1(data_list[1])
+
+            # Step 2 (Phương phức thanh toán)
+            step = 2
+            step_2(data_list[2])
+
+            # Step 3 (Đối tác vận chuyển)
+            step = 3
+            step_3(data_list[3])
 
             # # Step 4 (Commission Rule)
             # step = 4
@@ -587,17 +587,17 @@ def execute(environment: str = 'dev'):
             PLACE_ID = place_id
             place_count += 1
 
-            # # Step 6 (Tùy chọn)
-            # step = 6
-            # step_6(data_list[5])
-            #
-            # # Step 7 (Tùy chọn nhóm)
-            # step = 7
-            # step_7(data_list[6])
-            #
-            # # Step 8 (Tạo danh mục)
-            # step = 8
-            # step_8(data_list[7])
+            # Step 6 (Tùy chọn)
+            step = 6
+            step_6(data_list[5])
+
+            # Step 7 (Tùy chọn nhóm)
+            step = 7
+            step_7(data_list[6])
+
+            # Step 8 (Tạo danh mục)
+            step = 8
+            step_8(data_list[7])
 
             # Step 9 (Tạo mới sản phẩm)
             step = 9
