@@ -6,7 +6,7 @@ class ConstVariables:
 
     merchant_urls: List[str] = ["/merchant/{}/rule-order",
                                 "/merchant/{}/payment",
-                                "/merchant/{}/carrier",
+                                "/merchant/{}/carrier"
                                 ]
 
     place_urls: List[str] = ["/place/{}/commission",

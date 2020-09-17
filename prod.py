@@ -4,8 +4,8 @@ from variable import Variables
 
 
 class ProdVariables(Variables):
-    domain = 'https://inside.dev.meete.co'
+    domain = 'https://inside.meete.co'
 
     #User
     username = "tu"
-    password = "123456"
+    password = "MeeteVoDich"

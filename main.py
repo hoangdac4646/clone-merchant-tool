@@ -17,15 +17,13 @@ from prod import ProdVariables
 from step import TestStep
 from variable import Variables
 
-CONST_VAR: ConstVariables = ConstVariables()
-ENV_VAR: Variables = DevVariables()
 chromeOptions = Options()
 chromeOptions.add_argument("--start-maximized")
 WEBDRIVER = webdriver.Chrome(options=chromeOptions)
 
 
 def main():
-    execute('dev')
+    execute()
 
 
 def clear_element(element):
@@ -384,8 +382,7 @@ def step_9(params_list):
         WEBDRIVER.get(product_url)
 
         # Identify page
-        WebDriverWait(WEBDRIVER, 10).until(
-            EC.presence_of_all_elements_located((By.XPATH, elements[0].format(params[0]))))
+	    WebDriverWait(WEBDRIVER, 10).until(EC.presence_of_all_elements_located((By.XPATH, elements[0].format(params[0]))))
 
         # Fill form
         WEBDRIVER.find_element_by_xpath(elements[1].format(params[0])).click()
@@ -429,9 +426,9 @@ def step_9(params_list):
         clear_element(input_max_quantity)
         input_max_quantity.send_keys(int(params[8]))
 
-        input_discount_percent = WEBDRIVER.find_element_by_xpath(elements[11])
-        clear_element(input_discount_percent)
-        input_discount_percent.send_keys(int(params[9]))
+        # input_discount_percent = WEBDRIVER.find_element_by_xpath(elements[11])
+        # clear_element(input_discount_percent)
+        # input_discount_percent.send_keys(int(params[9]))
 
         WEBDRIVER.find_element_by_xpath(elements[12]).click()
 
@@ -460,7 +457,7 @@ def step_9(params_list):
 def import_file():
     import csv
 
-    with open('test.csv') as csv_file:
+    with open('test.csv', encoding='utf8') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         line_count = 0
         step = 0
@@ -541,7 +538,10 @@ def normalize(data):
 
 def execute(environment: str = 'dev'):
     global BUSINESS_ID, PLACE_ID
-    ENV_VAR = DevVariables if environment == 'dev' else ProdVariables
+    global ENV_VAR, CONST_VAR
+
+    CONST_VAR = ConstVariables()
+    ENV_VAR = DevVariables() if environment == 'dev' else ProdVariables()
 
     process_step: List[TestStep] = []
     step = 0
@@ -552,7 +552,8 @@ def execute(environment: str = 'dev'):
     place_ids = data_list[0][1].split(",")
     business_count = 0
     place_count = 0
-
+    BUSINESS_ID = 0
+    PLACE_ID = 0
     try:
         # Step 0 (Login)
         step = 0
@@ -574,18 +575,17 @@ def execute(environment: str = 'dev'):
             step = 3
             step_3(data_list[3])
 
-            # # Step 4 (Commission Rule)
-            # step = 4
-            # step_4(step_list[4])
-            #
+        for place_id in place_ids:
+            PLACE_ID = place_id
+            place_count += 1
+
+	    # Step 4 (Commission Rule)
+            step = 4
+            step_4(data_list[4])
 
             # # Step 5 (Zalo)
             # step = 5
             # step_5(step_list[4])
-
-        for place_id in place_ids:
-            PLACE_ID = place_id
-            place_count += 1
 
             # Step 6 (Tùy chọn)
             step = 6
@@ -603,7 +603,7 @@ def execute(environment: str = 'dev'):
             step = 9
             step_9(data_list[8])
 
-            print('Finish...\n')
+        print('Finish...\n')
 
     except Exception as ex:
         print(ex)
